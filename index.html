@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bolo English</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#f59e0b"><link rel="icon" href="icon-192.png">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fff8e7;--card:#fff;--ink:#2b2b2b;--accent:#16a34a;--blue:#2563eb;--bad:#dc2626;--line:#f1d98a;--ok:#bbf7d0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1a14;--card:#2a281f;--ink:#f5f0dc;--accent:#22c55e;--blue:#60a5fa;--bad:#f87171;--line:#4a4528;--ok:#14532d}}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif;text-align:center;user-select:none;-webkit-tap-highlight-color:transparent}
+#app{max-width:560px;margin:0 auto;padding:14px;min-height:100%;box-sizing:border-box}
+.big{font-size:2.2rem;border:0;border-radius:28px;padding:26px 10px;color:#fff;font-weight:700;width:100%;cursor:pointer;font-family:inherit;margin-bottom:14px}
+.big small{display:block;font-size:1.3rem;font-weight:600;margin-top:6px}
+.card{background:var(--card);border:3px solid var(--line);border-radius:28px;padding:18px}
+.pic{font-size:min(38vw,170px);line-height:1.2}
+.word{font-size:2.6rem;font-weight:800;margin:6px 0;direction:ltr}
+.row{display:flex;gap:12px;justify-content:center;margin-top:12px}
+.ic{font-size:2.6rem;border:0;border-radius:50%;width:84px;height:84px;cursor:pointer;background:var(--blue);color:#fff}
+.ic.h{background:#888;width:60px;height:60px;font-size:1.8rem}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ch{font-size:min(17vw,80px);background:var(--card);border:4px solid var(--line);border-radius:24px;padding:14px 0;cursor:pointer}
+.ch.ok{border-color:var(--accent);background:var(--ok)}
+.ch.no{border-color:var(--bad);animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:1.8rem;margin-bottom:12px}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cat{background:var(--card);border:4px solid var(--line);border-radius:26px;padding:18px 6px;font-size:1.6rem;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit}
+.cat span{display:block;font-size:4.2rem;line-height:1.2}
+.credit{margin-top:30px;font-size:.95rem;opacity:.7;direction:ltr}
+.ph{display:block;margin:0 auto;border-radius:18px;object-fit:cover}.ph[hidden]{display:none}.pic .ph{width:min(70vw,280px);height:min(70vw,280px)}.ch .ph{width:90%;aspect-ratio:1/1}
+.hide{display:none!important}
+</style></head><body>
+<div id="app">
+ <div id="cover">
+  
+  <div class="pic" style="font-size:110px">🗣️</div>
+  <h1 style="margin:0 0 8px;font-size:2.6rem">Bolo English</h1>
+  <p style="font-size:1.4rem;margin:0 0 26px">Listen, look and speak English</p>
+  <button class="big" style="background:var(--accent)" onclick="menu()">▶️ Start</button>
+  <div class="credit">Created by Rabia</div>
+ </div>
+ <div id="menu" class="hide">
+  <div class="top"><button class="ic h" onclick="stop();show('cover')">🔙</button><span>👇</span></div>
+  <div class="cats" id="cats"></div>
+ </div>
+ <div id="cat" class="hide">
+  <div class="top"><button class="ic h" onclick="menu()">🔙</button><span><span id="ci"></span> <span id="cn"></span></span></div>
+  <button class="big" style="background:var(--blue);margin-top:20px" onclick="startLearn()">👂 Learn<small>Listen and look</small></button>
+  <button class="big" style="background:var(--accent)" onclick="startQuiz()">🎮 Play<small>Pick the right picture</small></button>
+ </div>
+ <div id="learn" class="hide">
+  <div class="top"><span class="row" style="margin:0"><button class="ic h" onclick="pickCat(cat)">🔙</button><button class="ic h" onclick="menu()">🏠</button></span><span id="lp"></span></div>
+  <div class="card"><div class="pic" id="lpic"></div><div class="word" id="lword"></div>
+   <div class="row"><button class="ic" onclick="say(cur.w)">🔊</button></div></div>
+  <div class="row"><button class="ic h" style="width:84px;height:84px" onclick="step(-1)">⬅️</button><button class="ic" id="ap" style="background:var(--accent)" onclick="toggleAuto()">▶️</button><button class="ic" onclick="step(1)">➡️</button></div>
+ </div>
+ <div id="quiz" class="hide">
+  <div class="top"><span class="row" style="margin:0"><button class="ic h" onclick="pickCat(cat)">🔙</button><button class="ic h" onclick="menu()">🏠</button></span><span id="qs"></span></div>
+  <div class="card" style="margin-bottom:12px"><div style="font-size:1.6rem">👂 Listen</div>
+   <button class="ic" style="width:120px;height:120px;font-size:4rem;margin:8px 0" onclick="say(cur.w)">🔊</button></div>
+  <div class="choices" id="chs"></div>
+ </div>
+ <div id="end" class="hide">
+  <div class="pic" id="ei"></div><div id="es" style="font-size:2.2rem"></div>
+  <div style="font-size:2rem;margin-top:10px">Thank you! 🙏</div>
+  <div class="row"><button class="ic" onclick="again()">🔁</button><button class="ic h" style="width:84px;height:84px" onclick="menu()">📚</button></div>
+  <div class="credit">Created by Rabia ❤️</div>
+ </div>
+</div>
+<script>
+const P=a=>a.map(([w,e])=>({w,e}));
+const SV=b=>'<svg viewBox="0 0 64 64" width="1em" height="1em">'+b+'</svg>';
+const COT=SV('<rect x="5" y="20" width="54" height="16" rx="3" fill="#92400e"/><rect x="9" y="24" width="46" height="8" fill="#fde68a"/><path d="M15 24v8M21 24v8M27 24v8M33 24v8M39 24v8M45 24v8M50 24v8M9 28h46" stroke="#b45309" stroke-width="1.5"/><rect x="7" y="36" width="6" height="20" rx="2" fill="#78350f"/><rect x="51" y="36" width="6" height="20" rx="2" fill="#78350f"/>');
+const BLK=SV('<rect x="6" y="14" width="52" height="38" rx="5" fill="#ef4444"/><path d="M6 26h52M6 38h52" stroke="#fde68a" stroke-width="4"/>');
+const PIL=SV('<rect x="8" y="16" width="48" height="32" rx="12" fill="#93c5fd"/><path d="M14 24q18 6 36 0" stroke="#2563eb" stroke-width="2" fill="none"/>');
+const CATS=[
+{ic:"🌟",n:"Everyday Things",w:P([["car","🚗"],["bus","🚌"],["apple","🍎"],["banana","🍌"],["water","💧"],["milk","🥛"],["bread","🍞"],["egg","🥚"],["chicken","🐔"],["cow","🐄"],["cat","🐱"],["dog","🐶"],["house","🏠"],["key","🔑"],["phone","📱"],["shoes","👟"],["hat","🎩"],["watch","⌚"],["bed","🛏️"],["chair","🪑"],["bag","👜"],["book","📖"],["pen","🖊️"],["sun","☀️"],["moon","🌙"],["tree","🌳"],["flower","🌸"],["fish","🐟"],["onion","🧅"],["tomato","🍅"],["rice","🍚"],["umbrella","☂️"],["bicycle","🚲"],["eye","👁️"],["hand","✋"],["ear","👂"],["nose","👃"]])},
+{ic:"⏰",n:"Daily Routine",w:P([["alarm clock","⏰"],["toothbrush","🪥"],["bath","🛁"],["soap","🧼"],["mirror","🪞"],["clothes","👕"],["breakfast","🍳"],["tea","🍵"],["pray","🤲"],["walk","🚶"],["sleep","😴"],["lunch","🍱"]])},
+{ic:"🍛",n:"Feast & Food",w:P([["biryani","🍛"],["flatbread","🫓"],["kebab","🍢"],["salad","🥗"],["sweet","🍮"],["cake","🎂"],["ice cream","🍨"],["juice","🧃"],["spoon","🥄"],["plate","🍽️"],["watermelon","🍉"],["fork","🍴"]])},
+{ic:"👷",n:"Professions",w:P([["doctor","🧑‍⚕️"],["teacher","🧑‍🏫"],["police","👮"],["pilot","🧑‍✈️"],["chef","🧑‍🍳"],["farmer","🧑‍🌾"],["mechanic","🧑‍🔧"],["builder","👷"],["firefighter","🧑‍🚒"],["judge","🧑‍⚖️"]])},
+{ic:"✈️",n:"Travel & Outings",w:P([["airplane","✈️"],["train","🚆"],["taxi","🚕"],["ticket","🎫"],["suitcase","🧳"],["map","🗺️"],["hotel","🏨"],["mountain","⛰️"],["beach","🏖️"],["camera","📷"],["ship","🚢"],["tent","⛺"]])},
+{ic:"😊",n:"Happy, Sad - Cute Faces",w:P([["happy","😊"],["sad","😢"],["angry","😠"],["laughing","😂"],["crying","😭"],["surprised","😮"],["scared","😨"],["love","😍"],["sick","🤒"],["sleepy","🥱"],["cool","😎"],["thinking","🤔"],["thumbs up","👍"],["clap","👏"],["wave","👋"],["okay","👌"]])},
+{ic:"🏡",n:"Home Things",w:P([["cot",COT],["blanket",BLK],["pillow",PIL],["bed","🛏️"],["chair","🪑"],["sofa","🛋️"],["door","🚪"],["window","🪟"],["lamp","🪔"],["bulb","💡"],["candle","🕯️"],["mirror","🪞"],["television","📺"],["radio","📻"],["computer","💻"],["mouse","🖱️"],["telephone","☎️"],["headphones","🎧"],["loudspeaker","📢"],["bucket","🪣"],["broom","🧹"],["sponge","🧽"],["soap","🧼"],["toothbrush","🪥"],["toilet","🚽"],["shower","🚿"],["razor","🪒"],["tap","🚰"],["dustbin","🗑️"],["basket","🧺"],["scissors","✂️"],["needle","🪡"],["thread","🧵"],["yarn","🧶"],["hammer","🔨"],["screwdriver","🪛"],["saw","🪚"],["wrench","🔧"],["axe","🪓"],["ladder","🪜"],["rope","🪢"],["bolt","🔩"],["hook","🪝"],["magnet","🧲"],["chain","⛓️"],["lock","🔒"],["battery","🔋"],["plug","🔌"],["flashlight","🔦"],["fire","🔥"],["fire extinguisher","🧯"],["cooking pot","🍲"],["knife","🔪"],["cup","☕"],["glass","🥃"],["baby bottle","🍼"],["teapot","🫖"],["bowl","🥣"],["salt","🧂"],["box","📦"],["gift","🎁"],["letter","✉️"],["newspaper","📰"],["calendar","📅"],["paper","📄"],["pencil","✏️"],["notebook","📓"],["bell","🔔"],["coin","🪙"],["money","💵"],["purse","👛"],["ring","💍"],["beads","📿"],["glasses","👓"],["sunglasses","🕶️"],["lipstick","💄"],["lotion","🧴"],["trousers","👖"],["dress","👗"],["scarf","🧣"],["gloves","🧤"],["socks","🧦"],["coat","🧥"],["slippers","🩴"],["cap","🧢"],["t-shirt","👕"],["teddy bear","🧸"],["ball","⚽"],["kite","🪁"],["balloon","🎈"],["dice","🎲"],["playing cards","🃏"],["drum","🥁"],["thermometer","🌡️"],["tablet","💊"],["injection","💉"],["bandage","🩹"],["vase","🏺"],["plant","🪴"],["stone","🪨"],["log","🪵"],["brick","🧱"],["mousetrap","🪤"],["ice","🧊"]])}];
+const Z=s=>s.split(",").map(x=>{const m=x.trim().match(/^([\x00-\x7F]+?)\s*([^\x00-\x7F].*)$/);return m?{w:m[1].trim(),e:m[2]}:null}).filter(Boolean);
+CATS[0].w.push(...Z("horse🐴,goat🐐,sheep🐑,camel🐫,elephant🐘,lion🦁,tiger🐯,monkey🐒,rabbit🐰,bird🐦,duck🦆,parrot🦜,peacock🦚,snake🐍,frog🐸,butterfly🦋,bee🐝,ant🐜,mouse🐭,orange🍊,mango🥭,grapes🍇,lemon🍋,strawberry🍓,pineapple🍍,carrot🥕,potato🥔,corn🌽,cucumber🥒,garlic🧄,chili🌶️,mushroom🍄,coconut🥥,peach🍑,cherry🍒,pear🍐,eggplant🍆,broccoli🥦,mouth👄,tongue👅,foot🦶,leg🦵,tooth🦷,heart❤️,brain🧠,bone🦴,star⭐,cloud☁️,rain🌧️,snow❄️,rainbow🌈,lightning⚡,earth🌍,wind💨,leaf🍃,cactus🌵,palm tree🌴,rose🌹,truck🚚,tractor🚜,motorcycle🏍️,ambulance🚑,helicopter🚁,rocket🚀"));
+CATS[1].w.push(...Z("sunrise🌅,sunset🌇,night🌃,shower🚿,toilet🚽,razor🪒,lotion🧴,dinner🍽️,drink water🚰,read📖,write✍️,study📚,school🏫,school bag🎒,work💼,office🏢,bus stop🚏,shopping🛒,market🏪,bank🏦,mosque🕌,phone call📞,message💬,news📰,exercise🏋️,run🏃,swim🏊,cycling🚴,yoga🧘,cleaning🧹,laundry🧺,garden🌱,rest🛋️,dream💭,time⏳,snack🍪,juice🧃,bread🍞,haircut💇,nails💅,boots🥾,formal shoes👞,tie👔,glasses👓,keys🔑,lock🔒,door🚪,light💡,television📺,radio📻,music🎵,song🎤,dance💃,football⚽,kite🪁,night time🌙"));
+CATS[2].w.push(...Z("pizza🍕,burger🍔,fries🍟,hot dog🌭,sandwich🥪,taco🌮,noodles🍜,spaghetti🍝,soup🍲,dumpling🥟,pancake🥞,waffle🧇,meat🥩,chicken leg🍗,cheese🧀,butter🧈,egg🥚,fried egg🍳,bread🍞,croissant🥐,bagel🥯,pretzel🥨,donut🍩,cookie🍪,chocolate🍫,candy🍬,lollipop🍭,honey🍯,milk🥛,coffee☕,tea🍵,cola🥤,water💧,ice🧊,popcorn🍿,peanuts🥜,rice🍚,rice ball🍙,pie🥧,cupcake🧁,chopsticks🥢,knife🔪,bowl🥣,salt🧂,teapot🫖,apple🍎,green apple🍏,pear🍐,peach🍑,cherry🍒,strawberry🍓,blueberry🫐,kiwi🥝,grapes🍇,melon🍈,banana🍌,pineapple🍍,mango🥭,coconut🥥,lemon🍋,orange🍊,tomato🍅,olive🫒,avocado🥑,eggplant🍆,potato🥔,carrot🥕,corn🌽,pepper🌶️,bell pepper🫑,cucumber🥒,lettuce🥬,broccoli🥦,garlic🧄,onion🧅,mushroom🍄,fish🐟,shrimp🦐,crab🦀,lobster🦞,turkey🦃,bacon🥓,stew🥘,sushi🍣,chestnut🌰,cracker🍘"));
+CATS[3].w.push(...Z("scientist🧑‍🔬,artist🧑‍🎨,astronaut🧑‍🚀,guard💂,detective🕵️,singer🧑‍🎤,student🧑‍🎓,office worker🧑‍💼,programmer🧑‍💻,factory worker🧑‍🏭,king🤴,queen👸,barber💇,clown🤡,cowboy🤠,athlete🏃,swimmer🏊,golfer🏌️,surfer🏄,cyclist🚴,wrestler🤼"));
+CATS[4].w.push(...Z("car🚗,bus🚌,metro🚇,tram🚊,rickshaw🛺,van🚐,truck🚚,ambulance🚑,police car🚓,fire truck🚒,motorbike🏍️,bicycle🚲,scooter🛵,boat⛵,canoe🛶,helicopter🚁,rocket🚀,station🚉,bus stop🚏,traffic light🚦,road🛣️,bridge🌉,fuel⛽,parking🅿️,compass🧭,globe🌍,flag🏁,backpack🎒,beach umbrella⛱️,island🏝️,desert🏜️,volcano🌋,forest🌲,park🏞️,sunrise🌅,city🏙️,village🏘️,mosque🕌,temple🛕,church⛪,castle🏰,fort🏯,statue🗽,tower🗼,ferris wheel🎡,roller coaster🎢,circus🎪,stadium🏟️,hospital🏥,school🏫,bank🏦,market🏪,mall🏬,factory🏭,post office🏤,camping🏕️,fishing🎣,hiking🥾,skiing⛷️,snowman⛄,night🌃,sunset🌇,photo📸,credit card💳,money💵,airport🛫,landing🛬,seat💺"));
+CATS[5].w.push(...Z("smile🙂,upside down🙃,laugh😆,giggle😄,grinning😀,smiling😃,beaming😁,wink😉,relieved😌,smirk😏,neutral😐,expressionless😑,unamused😒,worried😟,confused😕,pleading🥺,frowning☹️,disappointed😞,tired😫,weary😩,sleeping😴,drooling🤤,nauseated🤢,vomiting🤮,sneezing🤧,hot🥵,cold🥶,dizzy😵,mind blown🤯,party🥳,nerd🤓,curious🧐,crazy🤪,tongue out😛,silly😜,rich🤑,hug🤗,quiet🤫,zipped mouth🤐,liar🤥,eye roll🙄,grimace😬,nervous😅,rofl🤣,kiss😘,star struck🤩,sweet🥰,devil😈,angel😇,ghost👻,skull💀,alien👽,robot🤖,clown🤡,poop💩,very angry😡,cursing🤬,screaming😱,anxious😰,relief😥,upset😣,confounded😖,anguished😧,shy😳,hushed😯,astonished😲,drowsy😪,mask😷,injured🤕,fist✊,punch👊,peace✌️,fingers crossed🤞,love you🤟,rock on🤘,call me🤙,point left👈,point right👉,point up👆,point down👇,index finger☝️,open hands👐,raised hands🙌,folded hands🙏,handshake🤝,writing✍️,muscle💪,selfie🤳,raised hand🖐️,pinch🤏,thumbs down👎,eyes👀,broken heart💔,sparkles✨"));
+CATS.forEach(c=>{const s=new Set();c.w=c.w.filter(x=>!s.has(x.e)&&s.add(x.e))});
+let cat,L,cur,i=0,order=[],q=0,score=0,lock=false,mode="";
+const $=id=>document.getElementById(id),S=["cover","menu","cat","learn","quiz","end"];
+function show(id){S.forEach(x=>$(x).classList.toggle("hide",x!==id))}
+function sp(t,r){const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=r;speechSynthesis.speak(u)}
+function say(t,keep){try{if(!keep)speechSynthesis.cancel();sp(t,.8);sp(t,.5)}catch(e){}}
+function pic(o){const f=o.w.replace(/ /g,"-");return '<span>'+o.e+'</span><img class="ph" hidden alt="" src="photos/'+f+'.jpg" onload="this.hidden=false;this.previousSibling.hidden=true">'}
+let auto=null;const TOLD={};
+const HELP={menu:"تصویر دبائیں اور موضوع چنیں",cat:"سیکھنے کے لیے نیلا بٹن دبائیں، کھیلنے کے لیے ہرا بٹن",learn:"تصویر دیکھیں، آواز سنیں اور بولیں",quiz:"آواز سنیں اور صحیح تصویر دبائیں"};
+function tell(k){if(TOLD[k])return false;try{const v=speechSynthesis.getVoices().find(x=>/^ur/i.test(x.lang));if(!v)return false;TOLD[k]=1;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(HELP[k]);u.voice=v;u.lang=v.lang;u.rate=.85;speechSynthesis.speak(u);return true}catch(e){return false}}
+try{speechSynthesis.getVoices()}catch(e){}
+function toggleAuto(){if(auto){stop();return}$("ap").textContent="⏸️";auto=setInterval(()=>{if(i>=L.length-1){stop();return}step(1)},5500)}
+function stop(){clearInterval(auto);auto=null;if($("ap"))$("ap").textContent="▶️";try{speechSynthesis.cancel()}catch(e){}}
+function shuffle(a){return a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1])}
+CATS.forEach(c=>{const b=document.createElement("button");b.className="cat";b.innerHTML="<span>"+c.ic+"</span>"+c.n;b.onclick=()=>pickCat(c);$("cats").appendChild(b)});
+function menu(){stop();show("menu");tell("menu")}
+function pickCat(c){stop();cat=c;L=c.w;$("ci").textContent=c.ic;$("cn").textContent=c.n;show("cat");tell("cat")}
+function startLearn(){mode="learn";i=0;show("learn");loadL(tell("learn"))}
+function loadL(k){cur=L[i];$("lpic").innerHTML=pic(cur);$("lword").textContent=cur.w;$("lp").textContent=(i+1)+" / "+L.length;say(cur.w,k)}
+function step(d){i+=d;if(i>=L.length){endPage(false);return}if(i<0)i=0;loadL()}
+function startQuiz(){mode="quiz";order=shuffle(L).slice(0,10);q=0;score=0;show("quiz");nextQ(tell("quiz"))}
+function nextQ(k){if(q>=order.length){endPage(true);return}
+ lock=false;cur=order[q];$("qs").textContent="⭐ "+score;
+ const opts=shuffle([cur,...shuffle(L.filter(x=>x!==cur)).slice(0,2)]);
+ $("chs").innerHTML="";opts.forEach(o=>{const b=document.createElement("button");b.className="ch";b.innerHTML=pic(o);b._o=o;b.onclick=()=>pick(b,o);$("chs").appendChild(b)});
+ setTimeout(()=>say(cur.w,k),300)}
+function pick(b,o){if(lock)return;
+ lock=true;if(o===cur){b.classList.add("ok");score++;$("qs").textContent="⭐ "+score;say("Yes! "+cur.w);q++;setTimeout(nextQ,1000)}
+ else{b.classList.add("no");[...$("chs").children].forEach(x=>{if(x._o===cur)x.classList.add("ok")});say("No. "+cur.w);q++;setTimeout(nextQ,3000)}}
+function endPage(quiz){show("end");$("ei").textContent=quiz?"🏆":"🎉";$("es").textContent=quiz?"⭐ "+score+" / "+order.length:"👏 👏 👏";say(quiz?"Well done!":"Great job!")}
+function again(){mode==="quiz"?startQuiz():startLearn()}
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script></body></html>
